@@ -36,4 +36,9 @@ public class LoginController {
         return json;
     }
 
+    @RequestMapping("index")
+    public String index(){
+        return "main";
+    }
+
 }

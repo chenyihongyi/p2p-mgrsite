@@ -22,7 +22,7 @@ public class InitAdminListener implements ApplicationListener<ContextRefreshedEv
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-	System.out.println("===========Spring启动好了"+this.logininfoService);
+	logininfoService.initAdmin();
 
 		
 	}
