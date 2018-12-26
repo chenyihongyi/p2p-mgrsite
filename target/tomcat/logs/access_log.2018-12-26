@@ -1,0 +1,11 @@
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /login.html HTTP/1.1" 200 2006 http-bio-8081-exec-1 142
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /css/core.css HTTP/1.1" 200 4208 http-bio-8081-exec-2 131
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /js/bootstrap-3.3.2-dist/js/bootstrap.js HTTP/1.1" 200 66732 http-bio-8081-exec-5 166
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /js/bootstrap-3.3.2-dist/css/bootstrap.css HTTP/1.1" 200 141415 http-bio-8081-exec-3 176
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /js/plugins/jquery.form.js HTTP/1.1" 200 43892 http-bio-8081-exec-7 179
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /js/jquery.bootstrap.min.js HTTP/1.1" 200 7015 http-bio-8081-exec-6 217
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /js/jquery/jquery-2.1.3.js HTTP/1.1" 200 247387 http-bio-8081-exec-4 218
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:32:37 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-8081-exec-4 4
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:56:32 +0800] "POST /login.do HTTP/1.1" 200 64 http-bio-8081-exec-2 1469
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:56:55 +0800] "GET /js/bootstrap-3.3.2-dist/css/bootstrap.css.map HTTP/1.1" 200 379710 http-bio-8081-exec-3 219
+0:0:0:0:0:0:0:1 - - [26/Dec/2018:01:56:58 +0800] "POST /login.do HTTP/1.1" 200 64 http-bio-8081-exec-4 302

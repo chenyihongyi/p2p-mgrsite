@@ -29,7 +29,7 @@ body{
 			if(data.success){
 				window.location.href="/index.do";
 			}else{
-				$.messager.alert("错误",data.msg);
+				$.messager.popup(data.msg);
 			}
 		}});
 	});	
