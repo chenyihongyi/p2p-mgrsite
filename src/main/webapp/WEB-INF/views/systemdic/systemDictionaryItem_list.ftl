@@ -11,87 +11,61 @@
 	
 	<script type="text/javascript">
 		$(function(){
-			$.extend($.fn.twbsPagination.defaults, {
+			$('#pagination').twbsPagination({
+				totalPages : ${pageResult.totalPage},
+				startPage : ${pageResult.currentPage},
+				visiblePages : 5,
 				first : "首页",
 				prev : "上一页",
 				next : "下一页",
-				last : "最后一页"
-			});
-
-			$('#pagination').twbsPagination({
-				totalPages : ${pageResult.totalPage}||1,
-				startPage : ${pageResult.currentPage},
-				visiblePages : 5,
+				last : "最后一页",
 				onPageClick : function(event, page) {
 					$("#currentPage").val(page);
 					$("#searchForm").submit();
 				}
 			});
+            //点击分组,查询分组下的明细
+            $(".group_item").click(function () {
+                $("#currentPage").val(1);
+                $(this).addClass("active");
+                $("#parentId").val($(this).data("dataid"));
+                $("#searchForm").submit();
+            });
+            //页面刷新的时候,根据当前的parentid把分组选定
+			var parentIdValue=$("#parentId").val();
+			if(parentIdValue){
+			    $("[data-dataid="+parentIdValue+"]").closest("li").addClass("active");
+			}
 			
-			//给数据字典目录添加点击事件
-			$(".group_item").click(function(){
-				$("#currentPage").val(1);
-				$("#parentId").val($(this).data("dataid"));
-				$("#searchForm").submit();
-			});
-			
-			//在点击完数据字典目录重新加载页面之后,回显parentId
-			$("input[name=parentId]").val(${(qo.parentId)!""});
-			//选中数据字典目录的那列添加选中样式
-			$("#systemDictionary_group_detail li a[data-dataid=${(qo.parentId)!-1}]").closest("li").addClass("active");
-			
-			
-			//点击添加数据字典明细
+			//点击添加明细
 			$("#addSystemDictionaryItemBtn").click(function(){
-				if($("#editForm input[name=parentId]").val()){
-					$("#editForm").resetForm();
+				if(parentIdValue){
+					$("#editFormParentId").val(parentIdValue);
 					$("#systemDictionaryItemModal").modal("show");
 				}else{
-					$.messager.popup("请选择一个数据目录!");
-					return ;
+					$.messager.popup("请选择一个分组!")
 				}
 			});
-		
-			$("#editForm").validate({
-				rules : {
-					title:"required",
-					sequence:{
-						required:true,
-						number:true
-					}
-				},
-				messages: {
-					title:"名称不能为空",
-					sequence:{
-						required:"序号不能为空",
-						number : "只能是数字",
-					}
-				}
-			});
-			
-			$("#saveBtn").click(function(){
-				//使用jquery-validate方法,首先调用validate方法添加验证规则,
-				//如果要手动提交表单,可以先使用$(form).valid()方法执行验证,这个方法返回true或者false
-				if($("#editForm").valid()){
+			//修改或保存
+			$("#editForm").ajaxForm(function(){
+				$.messager.confirm("提示","编辑成功", function(){
+					$("#searchForm").submit();
+				});
+			 });
+				$("#saveBtn").click(function(){
 					$("#editForm").submit();
-				}
+				});
+				//修改
+				$(".edit_Btn").click(function(){
+					var json=$(this).data("json");
+					$("#systemDictionaryId").val(json.id);
+					$("#editFormParentId").val(json.parentId);
+					$("#title").val(json.title);
+					$("#sequence").val(json.sequence);
+					$("#systemDictionaryItemModal").modal("show");
+				});
 			});
-			
-			//添加编辑按钮点击事件
-			$(".edit_Btn").click(function(){
-				var json=$(this).data("json");
-				
-				$("#editForm [name=id]").val(json.id);
-				$("#editForm [name=parentId").val(json.parentId);
-				$("#editForm [name=title]").val(json.title);
-				$("#editForm [name=sequence]").val(json.sequence);
-				$("#introId")[0].value=json.intro;
-				
-				$("#systemDictionaryItemModal").modal("show");
-			})
-			
-		});
-		</script>
+    </script>
 </head>
 <body>
 	<div class="container">
@@ -108,8 +82,8 @@
 				<div class="col-sm-12">
 					<!-- 提交分页的表单 -->
 					<form id="searchForm" class="form-inline" method="post" action="/systemDictionaryItem_list.do">
-						<input type="hidden" id="currentPage" name="currentPage" value="${(qo.currentPage)!''}"/>
-						<input type="hidden" id="parentId" name="parentId" value="" />
+						<input type="hidden" id="currentPage" name="currentPage" value="${(qo.currentPage)!1}"/>
+						<input type="hidden" id="parentId" name="parentId" value='${(qo.parentId)!""}' />
 						<div class="form-group">
 						    <label>关键字</label>
 						    <input class="form-control" type="text" name="keyword" value="${(qo.keyword!'')}">
@@ -138,7 +112,6 @@
 									<tr>
 										<th>名称</th>
 										<th>序列</th>
-										<th>说明</th>
 										<th>操作</th>
 									</tr>
 								</thead>
@@ -147,10 +120,8 @@
 									<tr>
 										<td>${vo.title}</td>
 										<td>${vo.sequence!""}</td>
-										<td width="150px;">${vo.intro!""}</td>
 										<td>
-											<a href="javascript:void(-1);" class="edit_Btn" data-json='${vo.jsonString}'>修改</a> &nbsp; 
-											<a href="javascript:void(-1);" class="deleteClass" data-dataId="${vo.id}">删除</a>
+										<a href="javascript:void(-1);" class="edit_Btn" data-json='${vo.jsonString}'>修改</a> &nbsp;
 										</td>
 									</tr>
 								</#list>
@@ -178,26 +149,20 @@
 	      <div class="modal-body">
 	       	  <form id="editForm" class="form-horizontal" method="post" action="systemDictionaryItem_update.do" style="margin: -3px 118px">
 				    <input id="systemDictionaryId" type="hidden" name="id" value="" />
-			    	<input type="hidden" name="parentId" value="" />
+			    	<input type="hidden" id="editFormParentId" name="parentId" value="" />
 				   	<div class="form-group">
 					    <label class="col-sm-3 control-label">名称</label>
 					    <div class="col-sm-6">
-					    	<input type="text" class="form-control" name="title" placeholder="字典值名称">
+					    	<input type="text" class="form-control" id="title" name="title" placeholder="字典值名称">
 					    </div>
 					</div>
 					<div class="form-group">
 					    <label class="col-sm-3 control-label">顺序</label>
 					    <div class="col-sm-6">
-					    	<input type="text" class="form-control" name="sequence" placeholder="字典值显示顺序">
+					    	<input type="text" class="form-control" id="sequence" name="sequence" placeholder="字典值显示顺序">
 					    </div>
 					</div>
-					<div class="form-group">
-					    <label class="col-sm-3 control-label">介绍</label>
-					    <div class="col-sm-6">
-					    	<textarea id="introId" rows="4" cols="24"  style="margin-top: 5px;" name="intro"></textarea>
-					    </div>
-					</div>
-			   </form>
+				 </form>
 		  </div>
 	      <div class="modal-footer">
 	      	<a href="javascript:void(0);" class="btn btn-success" id="saveBtn" aria-hidden="true">保存</a>
@@ -208,3 +173,4 @@
 	</div>
 </body>
 </html>
+
